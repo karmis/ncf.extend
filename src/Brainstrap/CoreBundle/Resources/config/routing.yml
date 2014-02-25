@@ -1,0 +1,12 @@
+company:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\CompanyController
+
+cart:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\CartController
+
+# user:
+#     type: rest
+#     parent: organisation
+#     resource: Brainstrap\CoreBundle\Controller\UserController

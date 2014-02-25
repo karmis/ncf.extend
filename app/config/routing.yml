@@ -1,0 +1,6 @@
+brainstrap_core:
+    type: rest
+    resource: "@BrainstrapCoreBundle/Resources/config/routing.yml"
+    prefix:   /api/core/
+    defaults: {_format: json}
+
