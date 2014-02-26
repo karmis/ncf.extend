@@ -56,7 +56,6 @@ class CartController extends FOSRestController
         $form->bind($request);
 
         if ($form->isValid()) {
-
             $type = $entity->getType();
 
             switch ($type) {
@@ -72,8 +71,15 @@ class CartController extends FOSRestController
             }
 
             $em = $this->getDoctrine()->getManager();
+            $company = $this->getCompanyForCart($entity->getCompany(), $em);
+            $entity->setCompany($company);
             $em->persist($entity);
-            $em->flush();
+
+            try {
+                $em->flush();
+            } catch (\Exception $e) {
+                throw new ValidateHttpException(500, "Не удалось создать карту");
+            }
 
             return new Response(array("id" => $entity->getId()), 201);
         }
@@ -96,8 +102,9 @@ class CartController extends FOSRestController
         $form->bind($request);
 
         if ($form->isValid()) {
-            // die(print_r($form->getData()));
             $em = $this->getDoctrine()->getManager();
+            $company = $this->getCompanyForCart($entity->getCompany(), $em);
+            $entity->setCompany($company);
             $em->persist($form->getData());
             $em->flush();
 
@@ -131,7 +138,7 @@ class CartController extends FOSRestController
      * @throws \Brainstrap\CoreBundle\Exception\ValidateHttpException
      * @return mixed
      */
-    protected function getEntity($id)
+    private  function getEntity($id)
     {
         $entity = $this->getRepository()->find($id);
 
@@ -148,7 +155,7 @@ class CartController extends FOSRestController
      * Возвращает репозиторий
      * @return mixed
      */
-    protected function getRepository()
+    private function getRepository()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -163,8 +170,32 @@ class CartController extends FOSRestController
      * @param $entity
      * @return \Symfony\Component\Form\Form
      */
-    protected function getForm($entity)
+    private function getForm($entity)
     {
         return $this::createForm(new CartType(), $entity);
+    }
+
+    /**
+     * @param $id
+     * @param null $em
+     * @return \Brainstrap\CoreBundle\Entity\Company\Company
+     * @throws \Brainstrap\CoreBundle\Exception\ValidateHttpException
+     */
+    private function  getCompanyForCart($id, $em = null)
+    {
+        if($em === null){
+            $em = $this->getDoctrine()->getManager();
+        }
+        try {
+            $company = $em->getRepository('BrainstrapCoreBundle:Company\Company')->find($id);
+        } catch (\Exception $e) {
+            throw new ValidateHttpException(500, "Не удалось получить компанию");
+        }
+
+        if (!$company) {
+            throw new ValidateHttpException(404, "Компания не существует");
+        }
+
+        return $company;
     }
 }

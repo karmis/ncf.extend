@@ -52,6 +52,11 @@ class Company
      */
     private $locked;
 
+    public function __toString()
+    {
+        return $this->caption;
+    }
+
     public function getEntityName()
     {
         return "company";
