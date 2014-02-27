@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Group Session
  *
- * @ORM\Table(name="sessions_group")
+ * @ORM\Table(name="core_sessions_group")
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Session\GroupSessionRepository")
  */
 class GroupSession

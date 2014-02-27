@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Company
  *
- * @ORM\Table(name="companies")
+ * @ORM\Table(name="core_companies")
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Company\CompanyRepository")
  */
 class Company

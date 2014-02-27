@@ -6,6 +6,10 @@ cart:
     type: rest
     resource: Brainstrap\CoreBundle\Controller\CartController
 
+client:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\ClientController
+
 # user:
 #     type: rest
 #     parent: organisation

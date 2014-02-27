@@ -19,7 +19,11 @@ class AppKernel extends Kernel
 
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
-            new Brainstrap\CoreBundle\BrainstrapCoreBundle()
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+
+            new Brainstrap\OAuthBundle\BrainstrapOAuthBundle(),
+            new Brainstrap\CoreBundle\BrainstrapCoreBundle(),
+
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

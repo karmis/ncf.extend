@@ -1,0 +1,25 @@
+parameters:
+#    brainstrap_o_auth.example.class: Brainstrap\OAuthBundle\Example
+    platform.entity.user.class: Brainstrap\OAuthBundle\Entity\User
+    platform.user.provider.class: Brainstrap\OAuthBundle\Provider\UserProvider
+
+
+services:
+    platform.user.manager:
+        class:            Doctrine\ORM\EntityManager
+        factory_service:  doctrine
+        factory_method:   getManagerForClass
+        arguments:        ["%platform.entity.user.class%"]
+
+    platform.user.repository:
+        class:            Brainstrap\OAuthBundle\Repository\UserRepository
+        factory_service:  platform.user.manager
+        factory_method:   getRepository
+        arguments:        ["%platform.entity.user.class%"]
+
+    platform.user.provider:
+        class: %platform.user.provider.class%
+        arguments: ["%platform.user.repository%"]
+#    brainstrap_o_auth.example:
+#        class: %brainstrap_o_auth.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

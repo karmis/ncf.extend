@@ -1,6 +1,15 @@
+brainstrap_o_auth:
+    resource: "@BrainstrapOAuthBundle/Resources/config/routing.yml"
+    prefix:   /
+
 brainstrap_core:
     type: rest
     resource: "@BrainstrapCoreBundle/Resources/config/routing.yml"
     prefix:   /api/core/
     defaults: {_format: json}
 
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+
+fos_oauth_server_authorize:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"

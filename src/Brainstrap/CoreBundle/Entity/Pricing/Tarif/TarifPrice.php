@@ -4,12 +4,7 @@ namespace Brainstrap\CoreBundle\Entity\Pricing\Tarif;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * TarifPrice
- *
- * @ORM\Table(name="pricing_tarif_priece")
- * @ORM\Entity
- */
+
 class TarifPrice
 {
     /**

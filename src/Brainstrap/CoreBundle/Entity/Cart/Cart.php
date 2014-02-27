@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert,
 /**
  * Cart
  *
- * @ORM\Table(name="carts")
+ * @ORM\Table(name="core_carts")
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Cart\CartRepository")
  * @UniqueEntity(

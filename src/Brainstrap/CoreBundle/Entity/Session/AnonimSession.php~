@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AnonimSession
  *
- * @ORM\Table(name="sessions_anonim")
+ * @ORM\Table(name="core_sessions_anonim")
  * @ORM\Entity
  */
 class AnonimSession

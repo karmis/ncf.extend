@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Messages
  *
- * @ORM\Table(name="messages")
+ * @ORM\Table(name="core_messages")
  * @ORM\Entity
  */
 class Messages

@@ -135,6 +135,19 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        if (0 === strpos($pathinfo, '/oauth/v2/auth_login')) {
+            // brainstrap_oauth_auth_login
+            if ($pathinfo === '/oauth/v2/auth_login') {
+                return array (  '_controller' => 'Brainstrap\\OAuthBundle\\Controller\\SecurityController::loginAction',  '_route' => 'brainstrap_oauth_auth_login',);
+            }
+
+            // brainstrap_oauth_login_check
+            if ($pathinfo === '/oauth/v2/auth_login_check') {
+                return array (  '_controller' => 'Brainstrap\\OAuthBundle\\Controller\\SecurityController::loginCheckAction',  '_route' => 'brainstrap_oauth_login_check',);
+            }
+
+        }
+
         if (0 === strpos($pathinfo, '/api/core/c')) {
             if (0 === strpos($pathinfo, '/api/core/companies')) {
                 // get_companies
@@ -251,6 +264,89 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 not_delete_cart:
 
             }
+
+            if (0 === strpos($pathinfo, '/api/core/clients')) {
+                // get_clients
+                if ($pathinfo === '/api/core/clients') {
+                    if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                        $allow = array_merge($allow, array('GET', 'HEAD'));
+                        goto not_get_clients;
+                    }
+
+                    return array (  '_controller' => 'Brainstrap\\CoreBundle\\Controller\\ClientController::cgetAction',  '_format' => 'json',  '_route' => 'get_clients',);
+                }
+                not_get_clients:
+
+                // get_client
+                if (preg_match('#^/api/core/clients/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                    if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                        $allow = array_merge($allow, array('GET', 'HEAD'));
+                        goto not_get_client;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'get_client')), array (  '_controller' => 'Brainstrap\\CoreBundle\\Controller\\ClientController::getAction',  '_format' => 'json',));
+                }
+                not_get_client:
+
+                // post_clients
+                if ($pathinfo === '/api/core/clients') {
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
+                        goto not_post_clients;
+                    }
+
+                    return array (  '_controller' => 'Brainstrap\\CoreBundle\\Controller\\ClientController::cpostAction',  '_format' => 'json',  '_route' => 'post_clients',);
+                }
+                not_post_clients:
+
+                // put_client
+                if (preg_match('#^/api/core/clients/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                    if ($this->context->getMethod() != 'PUT') {
+                        $allow[] = 'PUT';
+                        goto not_put_client;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'put_client')), array (  '_controller' => 'Brainstrap\\CoreBundle\\Controller\\ClientController::putAction',  '_format' => 'json',));
+                }
+                not_put_client:
+
+                // delete_client
+                if (preg_match('#^/api/core/clients/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                    if ($this->context->getMethod() != 'DELETE') {
+                        $allow[] = 'DELETE';
+                        goto not_delete_client;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_client')), array (  '_controller' => 'Brainstrap\\CoreBundle\\Controller\\ClientController::deleteAction',  '_format' => 'json',));
+                }
+                not_delete_client:
+
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/oauth/v2')) {
+            // fos_oauth_server_token
+            if ($pathinfo === '/oauth/v2/token') {
+                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                    goto not_fos_oauth_server_token;
+                }
+
+                return array (  '_controller' => 'fos_oauth_server.controller.token:tokenAction',  '_route' => 'fos_oauth_server_token',);
+            }
+            not_fos_oauth_server_token:
+
+            // fos_oauth_server_authorize
+            if ($pathinfo === '/oauth/v2/auth') {
+                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                    goto not_fos_oauth_server_authorize;
+                }
+
+                return array (  '_controller' => 'FOS\\OAuthServerBundle\\Controller\\AuthorizeController::authorizeAction',  '_route' => 'fos_oauth_server_authorize',);
+            }
+            not_fos_oauth_server_authorize:
 
         }
 

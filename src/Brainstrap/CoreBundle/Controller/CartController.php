@@ -106,7 +106,11 @@ class CartController extends FOSRestController
             $company = $this->getCompanyForCart($entity->getCompany(), $em);
             $entity->setCompany($company);
             $em->persist($form->getData());
-            $em->flush();
+            try {
+                $em->flush();
+            } catch (\Exception $e) {
+                throw new ValidateHttpException(500, "Не удалось создать клиента");
+            }
 
             return new Response(array("id" => $entity->getId()), 200);
         }
