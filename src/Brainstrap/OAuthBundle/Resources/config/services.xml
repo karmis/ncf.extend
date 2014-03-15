@@ -22,5 +22,11 @@
         <service id="platform.user.provider" class="%platform.user.provider.class%">
             <argument type="service" id="platform.user.repository"/>
         </service>
+
+        <service id="platform.grant_type.api_key" class="Brainstrap\OAuthBundle\OAuth\ApiKeyGrantExtension">
+            <tag name="fos_oauth_server.grant_extension" uri="http://ncf.test/grants/api_key"/>
+            <argument type="service" id="platform.user.repository"/>
+        </service>
     </services>
+
 </container>

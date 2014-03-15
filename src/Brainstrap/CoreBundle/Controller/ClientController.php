@@ -1,6 +1,7 @@
 <?php
 namespace Brainstrap\CoreBundle\Controller;
 
+use Brainstrap\CoreBundle\Entity\Cart\Cart;
 use Symfony\Component\BrowserKit\Response,
     Symfony\Component\HttpFoundation\Request;
 
@@ -56,24 +57,14 @@ class ClientController extends FOSRestController
         $form->bind($request);
 
         if ($form->isValid()) {
-//            $type = $entity->getType();
-//
-//            switch ($type) {
-//                case "single":
-//                    $entity->setType(Cart::CART_TYPE_SINGLE);
-//                    break;
-//                case "group":
-//                    $entity->setType(Cart::CART_TYPE_GROUP);
-//                    break;
-//                default:
-//                    $entity->setType(Cart::CART_TYPE_SINGLE);
-//                    break;
-//            }
-
             $em = $this->getDoctrine()->getManager();
-           //  $cart = $this->getCompanyForCart($entity->getCompany(), $em);
-           //  $entity->setCarts($cart);
 
+            if (!$entity->getLocked()) {
+                $entity->setLocked(false);
+            }
+
+            // Привязка карт
+            $this->linkCarts($entity->getCarts(), $em);
             $em->persist($entity);
 
             try {
@@ -81,10 +72,10 @@ class ClientController extends FOSRestController
             } catch (\Exception $e) {
                 throw new ValidateHttpException(500, "Не удалось создать клиента");
             }
-
-            return new Response(array("id" => $entity->getId()), 201);
+//
+            return new Response(array("entity" => $entity), 201);
         }
-
+//        }
         return array(
             'form' => $form,
         );
@@ -97,7 +88,8 @@ class ClientController extends FOSRestController
      * @return array|Response
      * @throws \Brainstrap\CoreBundle\Exception\ValidateHttpException
      */
-    public function putAction(Request $request, $id)
+    public
+    function putAction(Request $request, $id)
     {
         $entity = $this->getEntity($id);
         $form = $this->getForm($entity);
@@ -105,27 +97,35 @@ class ClientController extends FOSRestController
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form->getData());
+            if (!$entity->getLocked()) {
+                $entity->setLocked(false);
+            }
+
+            // Привязка карт
+            $this->linkCarts($entity->getCarts(), $em, $entity->getId());
+            $em->persist($entity);
+
             try {
                 $em->flush();
             } catch (\Exception $e) {
-                throw new ValidateHttpException(500, "Не удалось создать клиента");
+                throw new ValidateHttpException(500, "Не удалось обновить клиента");
             }
-
-            return new Response(array("id" => $entity->getId()), 200);
+//
+            return new Response(array("entity" => $entity), 201);
         }
-
         return array(
             'form' => $form,
         );
     }
+
 
     /**
      * Удаление сущности
      * @param $id
      * @return \FOS\RestBundle\View\View
      */
-    public function deleteAction($id)
+    public
+    function deleteAction($id)
     {
         $entity = $this->getEntity($id);
 
@@ -142,7 +142,8 @@ class ClientController extends FOSRestController
      * @throws \Brainstrap\CoreBundle\Exception\ValidateHttpException
      * @return mixed
      */
-    private  function getEntity($id)
+    private
+    function getEntity($id)
     {
         $entity = $this->getRepository()->find($id);
 
@@ -157,7 +158,8 @@ class ClientController extends FOSRestController
      * Возвращает репозиторий
      * @return mixed
      */
-    private function getRepository()
+    private
+    function getRepository()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -172,8 +174,39 @@ class ClientController extends FOSRestController
      * @param $entity
      * @return \Symfony\Component\Form\Form
      */
-    private function getForm($entity)
+    private
+    function getForm($entity)
     {
         return $this::createForm(new ClientType(), $entity);
+    }
+
+    /**
+     *
+     * @param $carts
+     * @param null $em
+     * @throws \Brainstrap\CoreBundle\Exception\ValidateHttpException
+     */
+    private function linkCarts($carts, $em = null)
+    {
+        if($em === null){
+            $em = $this->getDoctrine()->getManager();
+        }
+        if (isset($carts) && count($carts) > 0) {
+            for ($i = 0; $i < count($carts); $i++) {
+                $entityCart = $carts[$i];
+                // Проверка блокировки карты
+                if ($entityCart->getLocked()) {
+                    throw new ValidateHttpException(500, "Карта с номером " . $entityCart->getCode() . " заблокирована");
+                }
+                // Ставим статус привязки карты
+                if ($entityCart->getStatusBusy() === Cart::CART_BUSY_STATUS_FREE) {
+                    $entityCart->setStatusBusy(Cart::CART_BUSY_STATUS_BUSY);
+                    $em->persist($entityCart);
+                } else {
+                    throw new ValidateHttpException(500, "Карта с номером " . $entityCart->getCode() . "  уже была привязана другому клиенту");
+                }
+
+            }
+        }
     }
 }

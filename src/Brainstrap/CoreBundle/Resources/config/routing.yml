@@ -10,6 +10,26 @@ client:
     type: rest
     resource: Brainstrap\CoreBundle\Controller\ClientController
 
+session_simple:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\SimpleSessionController
+
+session_group:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\Session\GroupSessionController
+
+session_status_completed:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\SessionStatusController
+
+rate_time:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\Rate\TimeController
+
+rate_time_collection:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\Rate\CollectionTimeController
+
 # user:
 #     type: rest
 #     parent: organisation

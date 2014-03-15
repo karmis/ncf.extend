@@ -2,12 +2,11 @@
 
 namespace Brainstrap\CoreBundle\Controller;
 
-use Symfony\Component\Form\Extension\Validator\Constraints\Form,
+use Symfony\Component\BrowserKit\Response,
     Symfony\Component\HttpFoundation\Request;
 
 use FOS\RestBundle\Controller\FOSRestController,
     FOS\RestBundle\Controller\Annotations as Rest,
-    FOS\RestBundle\Util\Codes,
     FOS\RestBundle\Controller\Annotations\RouteResource;
 
 use Brainstrap\CoreBundle\Entity\Company\Company,
@@ -56,20 +55,19 @@ class CompanyController extends FOSRestController
         $entity = new Company();
         $form = $this->getForm($entity);
         $form->bind($request);
-
+        if(!$entity->getLocked()){
+            $entity->setLocked(false);
+        }
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
-            $em->flush();
+            try {
+                $em->flush();
+            } catch (\Exception $e) {
+                throw new ValidateHttpException(500, "Не удалось создать компанию");
+            }
 
-            return $this->redirectView(
-                $this->generateUrl(
-                    'get_company',
-                    array('id' => $entity->getId())
-
-                ),
-                Codes::HTTP_CREATED
-            );
+            return new Response(array("entity" => $entity), 201);
         }
 
         return array(
@@ -88,14 +86,20 @@ class CompanyController extends FOSRestController
         $entity = $this->getEntity($id);
         $form = $this->getForm($entity);
         $form->bind($request);
-
+        if(!$entity->getLocked()){
+            $entity->setLocked(false);
+        }
         if ($form->isValid()) {
             // die(print_r($form->getData()));
             $em = $this->getDoctrine()->getManager();
             $em->persist($form->getData());
-            $em->flush();
+            try {
+                $em->flush();
+            } catch (\Exception $e) {
+                throw new ValidateHttpException(500, "Не удалось обновить компанию");
+            }
 
-            return $this->view($form->getData(), Codes::HTTP_NO_CONTENT);
+            return new Response(array("entity" => $entity), 200);
         }
 
         return array(
@@ -114,9 +118,13 @@ class CompanyController extends FOSRestController
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($entity);
-        $em->flush();
+        try {
+            $em->flush();
+        } catch (\Exception $e) {
+            throw new ValidateHttpException(500, "Не удалось удалить компанию");
+        }
 
-        return $this->view(null, Codes::HTTP_NO_CONTENT);
+        return new Response(array("id" => null), 200);
     }
 
     /**

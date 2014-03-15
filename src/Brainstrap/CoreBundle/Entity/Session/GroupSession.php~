@@ -2,16 +2,25 @@
 
 namespace Brainstrap\CoreBundle\Entity\Session;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Group Session
+ * Simple Session
  *
  * @ORM\Table(name="core_sessions_group")
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Session\GroupSessionRepository")
+ * @UniqueEntity(
+ *     fields={"cart"},
+ *     errorPath="cart",
+ *     message="Для этой карты уже существует сессия"
+ * )
  */
 class GroupSession
 {
+
     /**
      * @var integer
      *
@@ -22,159 +31,39 @@ class GroupSession
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Cart\Cart")
-     * @ORM\JoinColumn(name="cart_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Company\Company")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      */
-    private $cart;
+    private $company;
 
     /**
-     * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Client\Client")
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatus")
+     * @ORM\JoinColumn(name="status_complete_id", referencedColumnName="id")
      */
-    private $client;
+    private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\AnonimSession")
-     * @ORM\JoinColumn(name="anonim_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Session\AnonimSession", inversedBy="parent")
+     * @ORM\JoinTable(name="core_sessions_group_childs_anonim")
      */
-    private $anonims;
+    protected $childs;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="endDate", type="datetime")
+     * @ORM\Column(name="finished", type="datetime", nullable=true)
      */
-    private $endDate;
+    private $finished;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="editDate", type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $editDate;
+    private $created;
 
     /**
-     * Get id
-     *
-     * @return integer 
+     * @ORM\Column(name="updated", type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     * @return GroupSession
-     */
-    public function setEndDate($endDate)
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime 
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
-    }
-
-    /**
-     * Set editDate
-     *
-     * @param \DateTime $editDate
-     * @return GroupSession
-     */
-    public function setEditDate($editDate)
-    {
-        $this->editDate = $editDate;
-
-        return $this;
-    }
-
-    /**
-     * Get editDate
-     *
-     * @return \DateTime 
-     */
-    public function getEditDate()
-    {
-        return $this->editDate;
-    }
-
-    /**
-     * Set cart
-     *
-     * @param \Brainstrap\CoreBundle\Entity\Cart\Cart $cart
-     * @return GroupSession
-     */
-    public function setCart(\Brainstrap\CoreBundle\Entity\Cart\Cart $cart = null)
-    {
-        $this->cart = $cart;
-
-        return $this;
-    }
-
-    /**
-     * Get cart
-     *
-     * @return \Brainstrap\CoreBundle\Entity\Cart\Cart 
-     */
-    public function getCart()
-    {
-        return $this->cart;
-    }
-
-    /**
-     * Set client
-     *
-     * @param \Brainstrap\CoreBundle\Entity\Client\Client $client
-     * @return GroupSession
-     */
-    public function setClient(\Brainstrap\CoreBundle\Entity\Client\Client $client = null)
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    /**
-     * Get client
-     *
-     * @return \Brainstrap\CoreBundle\Entity\Client\Client 
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * Set anonims
-     *
-     * @param \Brainstrap\CoreBundle\Entity\Session\AnonimSession $anonims
-     * @return GroupSession
-     */
-    public function setAnonims(\Brainstrap\CoreBundle\Entity\Session\AnonimSession $anonims = null)
-    {
-        $this->anonims = $anonims;
-
-        return $this;
-    }
-
-    /**
-     * Get anonims
-     *
-     * @return \Brainstrap\CoreBundle\Entity\Session\AnonimSession 
-     */
-    public function getAnonims()
-    {
-        return $this->anonims;
-    }
+    private $updated;
 }

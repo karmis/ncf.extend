@@ -2,8 +2,9 @@
 
 namespace Brainstrap\CoreBundle\Entity\Client;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Client
  *
@@ -25,6 +26,8 @@ class Client
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank(message = "{name:'empty'}")
+     * @Assert\NotNull(message = "{name:'empty'}")
      */
     private $name;
 
@@ -32,14 +35,22 @@ class Client
      * @var string
      *
      * @ORM\Column(name="sname", type="string", length=100)
+     * @Assert\NotBlank(message = "{sname:'empty'}")
+     * @Assert\NotNull(message = "{sname:'empty'}")
      */
     private $sname;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Cart\Cart")
-     * @ORM\JoinColumn(name="cart_id", referencedColumnName="id")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $carts;
+    private $created;
+
+    /**
+     * @ORM\Column(name="updated", type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    private $updated;
 
     /**
      * @var string
@@ -47,6 +58,24 @@ class Client
      * @ORM\Column(name="locked", type="boolean")
      */
     private $locked;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Cart\Cart", inversedBy="clients")
+     * @ORM\JoinTable(name="core_clients_carts")
+     */
+    protected $carts;
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->carts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -105,6 +134,52 @@ class Client
     }
 
     /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Client
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Client
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
      * Set locked
      *
      * @param boolean $locked
@@ -128,22 +203,32 @@ class Client
     }
 
     /**
-     * Set carts
+     * Add carts
      *
      * @param \Brainstrap\CoreBundle\Entity\Cart\Cart $carts
      * @return Client
      */
-    public function setCarts(\Brainstrap\CoreBundle\Entity\Cart\Cart $carts = null)
+    public function addCart(\Brainstrap\CoreBundle\Entity\Cart\Cart $carts)
     {
-        $this->carts = $carts;
+        $this->carts[] = $carts;
 
         return $this;
     }
 
     /**
+     * Remove carts
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Cart\Cart $carts
+     */
+    public function removeCart(\Brainstrap\CoreBundle\Entity\Cart\Cart $carts)
+    {
+        $this->carts->removeElement($carts);
+    }
+
+    /**
      * Get carts
      *
-     * @return \Brainstrap\CoreBundle\Entity\Cart\Cart 
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getCarts()
     {

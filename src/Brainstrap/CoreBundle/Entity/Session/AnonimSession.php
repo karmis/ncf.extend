@@ -3,7 +3,7 @@
 namespace Brainstrap\CoreBundle\Entity\Session;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * AnonimSession
  *
@@ -22,31 +22,41 @@ class AnonimSession
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="starDate", type="datetime")
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatus")
+     * @ORM\JoinColumn(name="status_complete_id", referencedColumnName="id")
      */
-    private $starDate;
+    private $status;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="endDate", type="datetime")
+     * @ORM\Column(name="finished", type="datetime", nullable=true)
      */
-    private $endDate;
+    private $finished;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="editDate", type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $editDate;
+    private $created;
 
     /**
-     * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\GroupSession")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * @ORM\Column(name="updated", type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
-    private $group;
+    private $updated;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Session\GroupSession", mappedBy="childs")
+     */
+    protected $parent;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->parent = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -59,94 +69,127 @@ class AnonimSession
     }
 
     /**
-     * Set starDate
+     * Set finished
      *
-     * @param \DateTime $starDate
+     * @param \DateTime $finished
      * @return AnonimSession
      */
-    public function setStarDate($starDate)
+    public function setFinished($finished)
     {
-        $this->starDate = $starDate;
+        $this->finished = $finished;
 
         return $this;
     }
 
     /**
-     * Get starDate
+     * Get finished
      *
      * @return \DateTime 
      */
-    public function getStarDate()
+    public function getFinished()
     {
-        return $this->starDate;
+        return $this->finished;
     }
 
     /**
-     * Set endDate
+     * Set created
      *
-     * @param \DateTime $endDate
+     * @param \DateTime $created
      * @return AnonimSession
      */
-    public function setEndDate($endDate)
+    public function setCreated($created)
     {
-        $this->endDate = $endDate;
+        $this->created = $created;
 
         return $this;
     }
 
     /**
-     * Get endDate
+     * Get created
      *
      * @return \DateTime 
      */
-    public function getEndDate()
+    public function getCreated()
     {
-        return $this->endDate;
+        return $this->created;
     }
 
     /**
-     * Set editDate
+     * Set updated
      *
-     * @param \DateTime $editDate
+     * @param \DateTime $updated
      * @return AnonimSession
      */
-    public function setEditDate($editDate)
+    public function setUpdated($updated)
     {
-        $this->editDate = $editDate;
+        $this->updated = $updated;
 
         return $this;
     }
 
     /**
-     * Get editDate
+     * Get updated
      *
      * @return \DateTime 
      */
-    public function getEditDate()
+    public function getUpdated()
     {
-        return $this->editDate;
+        return $this->updated;
     }
 
     /**
-     * Set group
+     * Set status
      *
-     * @param \Brainstrap\CoreBundle\Entity\Session\GroupSession $group
+     * @param \Brainstrap\CoreBundle\Entity\Session\SessionStatus $status
      * @return AnonimSession
      */
-    public function setGroup(\Brainstrap\CoreBundle\Entity\Session\GroupSession $group = null)
+    public function setStatus(\Brainstrap\CoreBundle\Entity\Session\SessionStatus $status = null)
     {
-        $this->group = $group;
+        $this->status = $status;
 
         return $this;
     }
 
     /**
-     * Get group
+     * Get status
      *
-     * @return \Brainstrap\CoreBundle\Entity\Session\GroupSession 
+     * @return \Brainstrap\CoreBundle\Entity\Session\SessionStatus 
      */
-    public function getGroup()
+    public function getStatus()
     {
-        return $this->group;
+        return $this->status;
+    }
+
+    /**
+     * Add parent
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Session\GroupSession $parent
+     * @return AnonimSession
+     */
+    public function addParent(\Brainstrap\CoreBundle\Entity\Session\GroupSession $parent)
+    {
+        $this->parent[] = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Remove parent
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Session\GroupSession $parent
+     */
+    public function removeParent(\Brainstrap\CoreBundle\Entity\Session\GroupSession $parent)
+    {
+        $this->parent->removeElement($parent);
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 }

@@ -19,7 +19,7 @@ class CartType extends AbstractType
             ->add('type')
             ->add('locked')
             ->add('company')
-            ->add('client')
+//            ->add('clients')
         ;
     }
     

@@ -3,7 +3,7 @@
 namespace Brainstrap\CoreBundle\Entity\Session;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * AnonimSession
  *
@@ -22,131 +22,32 @@ class AnonimSession
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="starDate", type="datetime")
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatus")
+     * @ORM\JoinColumn(name="status_complete_id", referencedColumnName="id")
      */
-    private $starDate;
+    private $status;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="endDate", type="datetime")
+     * @ORM\Column(name="finished", type="datetime", nullable=true)
      */
-    private $endDate;
+    private $finished;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="editDate", type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $editDate;
+    private $created;
 
     /**
-     * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\GroupSession")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * @ORM\Column(name="updated", type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
-    private $group;
+    private $updated;
 
     /**
-     * Get id
-     *
-     * @return integer 
+     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Session\GroupSession", mappedBy="childs")
      */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set starDate
-     *
-     * @param \DateTime $starDate
-     * @return AnonimSession
-     */
-    public function setStarDate($starDate)
-    {
-        $this->starDate = $starDate;
-
-        return $this;
-    }
-
-    /**
-     * Get starDate
-     *
-     * @return \DateTime 
-     */
-    public function getStarDate()
-    {
-        return $this->starDate;
-    }
-
-    /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     * @return AnonimSession
-     */
-    public function setEndDate($endDate)
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime 
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
-    }
-
-    /**
-     * Set editDate
-     *
-     * @param \DateTime $editDate
-     * @return AnonimSession
-     */
-    public function setEditDate($editDate)
-    {
-        $this->editDate = $editDate;
-
-        return $this;
-    }
-
-    /**
-     * Get editDate
-     *
-     * @return \DateTime 
-     */
-    public function getEditDate()
-    {
-        return $this->editDate;
-    }
-
-    /**
-     * Set group
-     *
-     * @param \Brainstrap\CoreBundle\Entity\Session\GroupSession $group
-     * @return AnonimSession
-     */
-    public function setGroup(\Brainstrap\CoreBundle\Entity\Session\GroupSession $group = null)
-    {
-        $this->group = $group;
-
-        return $this;
-    }
-
-    /**
-     * Get group
-     *
-     * @return \Brainstrap\CoreBundle\Entity\Session\GroupSession 
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
+    protected $parent;
 }

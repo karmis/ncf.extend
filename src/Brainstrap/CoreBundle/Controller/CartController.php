@@ -53,35 +53,30 @@ class CartController extends FOSRestController
     {
         $entity = new Cart();
         $form = $this->getForm($entity);
+
         $form->bind($request);
 
+
         if ($form->isValid()) {
-            $type = $entity->getType();
-
-            switch ($type) {
-                case "single":
-                    $entity->setType(Cart::CART_TYPE_SINGLE);
-                    break;
-                case "group":
-                    $entity->setType(Cart::CART_TYPE_GROUP);
-                    break;
-                default:
-                    $entity->setType(Cart::CART_TYPE_SINGLE);
-                    break;
-            }
-
             $em = $this->getDoctrine()->getManager();
             $company = $this->getCompanyForCart($entity->getCompany(), $em);
+            $this->setCartType($entity->getType(), $entity);
             $entity->setCompany($company);
+
+            if (!$entity->getLocked()) {
+                $entity->setLocked(false);
+            }
+
             $em->persist($entity);
 
+            $em->flush();
             try {
-                $em->flush();
+
             } catch (\Exception $e) {
                 throw new ValidateHttpException(500, "Не удалось создать карту");
             }
-
-            return new Response(array("id" => $entity->getId()), 201);
+//            die(print_r($entity->getCode()));
+            return new Response(array("entity" => $entity), 201);
         }
 
         return array(
@@ -104,15 +99,23 @@ class CartController extends FOSRestController
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $company = $this->getCompanyForCart($entity->getCompany(), $em);
+            $this->setCartType($entity->getType(), $entity);
             $entity->setCompany($company);
-            $em->persist($form->getData());
+
+            if (!$entity->getLocked()) {
+                $entity->setLocked(false);
+            }
+
+            $em->persist($entity);
+
+            $em->flush();
             try {
                 $em->flush();
             } catch (\Exception $e) {
                 throw new ValidateHttpException(500, "Не удалось создать клиента");
             }
 
-            return new Response(array("id" => $entity->getId()), 200);
+            return new Response(array("entity" => $entity), 200);
         }
 
         return array(
@@ -121,17 +124,28 @@ class CartController extends FOSRestController
     }
 
     /**
-     * Удаление сущности
+     * Удаление карты
+     * Фактически - смена статуса карты с занята на свободна
      * @param $id
      * @return \FOS\RestBundle\View\View
      */
     public function deleteAction($id)
     {
-        $entity = $this->getEntity($id);
-
         $em = $this->getDoctrine()->getManager();
-        $em->remove($entity);
+        $entity = $this->getEntity($id);
+        $clients = $entity->getClient();
+        foreach($clients as $client){
+            $entity->removeClient($client);
+            $client->removeCart($entity);
+        }
+        $entity->setStatusBusy(Cart::CART_BUSY_STATUS_FREE);
+        $em->persist($entity);
         $em->flush();
+//        try {
+//
+//        } catch (\Exception $e) {
+//            throw new ValidateHttpException(500, "Не удалось удалить карту");
+//        }
 
         return new Response(array("id" => null), 200);
     }
@@ -142,15 +156,13 @@ class CartController extends FOSRestController
      * @throws \Brainstrap\CoreBundle\Exception\ValidateHttpException
      * @return mixed
      */
-    private  function getEntity($id)
+    private function getEntity($id)
     {
         $entity = $this->getRepository()->find($id);
 
         if (!$entity) {
             throw new ValidateHttpException(404, "Не удалось найти карту");
         }
-
-        //$this->
 
         return $entity;
     }
@@ -187,7 +199,7 @@ class CartController extends FOSRestController
      */
     private function  getCompanyForCart($id, $em = null)
     {
-        if($em === null){
+        if ($em === null) {
             $em = $this->getDoctrine()->getManager();
         }
         try {
@@ -201,5 +213,20 @@ class CartController extends FOSRestController
         }
 
         return $company;
+    }
+
+    private function setCartType($type, $entity)
+    {
+        switch ($type) {
+            case "single":
+                $entity->setType(Cart::CART_TYPE_SINGLE);
+                break;
+            case "group":
+                $entity->setType(Cart::CART_TYPE_GROUP);
+                break;
+            default:
+                $entity->setType(Cart::CART_TYPE_SINGLE);
+                break;
+        }
     }
 }

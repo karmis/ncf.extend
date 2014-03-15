@@ -47,19 +47,12 @@ class Company
      * @var boolean
      *
      * @ORM\Column(name="locked", type="boolean")
-     * @Assert\NotBlank(message = "{locked:'empty'}")
-     * @Assert\NotNull(message = "{locked:'empty'}")
      */
     private $locked;
 
     public function __toString()
     {
         return $this->caption;
-    }
-
-    public function getEntityName()
-    {
-        return "company";
     }
 
     /**
@@ -93,29 +86,6 @@ class Company
     public function getCaption()
     {
         return $this->caption;
-    }
-
-    /**
-     * Set locked
-     *
-     * @param boolean $locked
-     * @return Company
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-
-        return $this;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean 
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 
     /**
@@ -162,5 +132,28 @@ class Company
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Set locked
+     *
+     * @param boolean $locked
+     * @return Company
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+
+        return $this;
+    }
+
+    /**
+     * Get locked
+     *
+     * @return boolean 
+     */
+    public function getLocked()
+    {
+        return $this->locked;
     }
 }

@@ -2,16 +2,25 @@
 
 namespace Brainstrap\CoreBundle\Entity\Session;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Simple Session
  *
  * @ORM\Table(name="core_sessions_simple")
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Session\SimpleSessionRepository")
+ * @UniqueEntity(
+ *     fields={"cart"},
+ *     errorPath="cart",
+ *     message="Для этой карты уже существует сессия"
+ * )
  */
 class SimpleSession
 {
+
     /**
      * @var integer
      *
@@ -22,30 +31,47 @@ class SimpleSession
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Company\Company")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     */
+    private $company;
+
+    /**
      * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Cart\Cart")
      * @ORM\JoinColumn(name="cart_id", referencedColumnName="id")
      */
     private $cart;
 
     /**
-     * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Client\Client")
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime")
+     * @ORM\JoinColumn(name="rate_time_id", referencedColumnName="id")
      */
-    private $client;
+    private $rate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatus")
+     * @ORM\JoinColumn(name="status_complete_id", referencedColumnName="id")
+     */
+    private $status;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="endDate", type="datetime")
+     * @ORM\Column(name="finished", type="datetime", nullable=true)
      */
-    private $endDate;
+    private $finished;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="editDate", type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $editDate;
+    private $created;
+
+    /**
+     * @ORM\Column(name="updated", type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    private $updated;
 
     /**
      * Get id
@@ -58,49 +84,95 @@ class SimpleSession
     }
 
     /**
-     * Set endDate
+     * Set finished
      *
-     * @param \DateTime $endDate
+     * @param \DateTime $finished
      * @return SimpleSession
      */
-    public function setEndDate($endDate)
+    public function setFinished($finished)
     {
-        $this->endDate = $endDate;
+        $this->finished = $finished;
 
         return $this;
     }
 
     /**
-     * Get endDate
+     * Get finished
      *
      * @return \DateTime 
      */
-    public function getEndDate()
+    public function getFinished()
     {
-        return $this->endDate;
+        return $this->finished;
     }
 
     /**
-     * Set editDate
+     * Set created
      *
-     * @param \DateTime $editDate
+     * @param \DateTime $created
      * @return SimpleSession
      */
-    public function setEditDate($editDate)
+    public function setCreated($created)
     {
-        $this->editDate = $editDate;
+        $this->created = $created;
 
         return $this;
     }
 
     /**
-     * Get editDate
+     * Get created
      *
      * @return \DateTime 
      */
-    public function getEditDate()
+    public function getCreated()
     {
-        return $this->editDate;
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return SimpleSession
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Company\Company $company
+     * @return SimpleSession
+     */
+    public function setCompany(\Brainstrap\CoreBundle\Entity\Company\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Company\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 
     /**
@@ -127,25 +199,48 @@ class SimpleSession
     }
 
     /**
-     * Set client
+     * Set rate
      *
-     * @param \Brainstrap\CoreBundle\Entity\Client\Client $client
+     * @param \Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime $rate
      * @return SimpleSession
      */
-    public function setClient(\Brainstrap\CoreBundle\Entity\Client\Client $client = null)
+    public function setRate(\Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime $rate = null)
     {
-        $this->client = $client;
+        $this->rate = $rate;
 
         return $this;
     }
 
     /**
-     * Get client
+     * Get rate
      *
-     * @return \Brainstrap\CoreBundle\Entity\Client\Client 
+     * @return \Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime 
      */
-    public function getClient()
+    public function getRate()
     {
-        return $this->client;
+        return $this->rate;
+    }
+
+    /**
+     * Set status
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Session\SessionStatus $status
+     * @return SimpleSession
+     */
+    public function setStatus(\Brainstrap\CoreBundle\Entity\Session\SessionStatus $status = null)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Session\SessionStatus 
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }
