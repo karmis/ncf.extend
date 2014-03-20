@@ -2,6 +2,7 @@
 
 namespace Brainstrap\CoreBundle\Form\Client;
 
+use Brainstrap\CoreBundle\Form\Cart\CartType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,8 +18,11 @@ class ClientType extends AbstractType
         $builder
             ->add('name')
             ->add('sname')
-            ->add('locked')
-            ->add('carts')
+            ->add('carts', 'collection', array(
+                'type' => new CartType(),
+                'allow_add' => true,
+                'allow_delete' => true
+            ))
         ;
     }
     

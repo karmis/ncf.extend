@@ -2,7 +2,10 @@
 
 namespace Brainstrap\CoreBundle\Entity\Rate\Time;
 
+use Brainstrap\CoreBundle\Entity\AbstractApiEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * EntityTime
@@ -10,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="core_rate_time_entity")
  * @ORM\Entity
  */
-class EntityTime
+class EntityTime extends AbstractApiEntity
 {
     /**
      * @var integer
@@ -43,6 +46,12 @@ class EntityTime
     private $afterLast;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Company\Company")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     */
+    private $company;
+    
+    /**
      * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Rate\Time\CollectionTime", cascade={"all"})
      * @ORM\JoinTable(name="core_rate_time_hours")
      */
@@ -57,6 +66,7 @@ class EntityTime
      */
     public function __construct()
     {
+        parent::__construct();
         $this->hours = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -94,6 +104,75 @@ class EntityTime
     }
 
     /**
+     * Set last
+     *
+     * @param integer $last
+     * @return EntityTime
+     */
+    public function setLast($last)
+    {
+        $this->last = $last;
+
+        return $this;
+    }
+
+    /**
+     * Get last
+     *
+     * @return integer 
+     */
+    public function getLast()
+    {
+        return $this->last;
+    }
+
+    /**
+     * Set afterLast
+     *
+     * @param string $afterLast
+     * @return EntityTime
+     */
+    public function setAfterLast($afterLast)
+    {
+        $this->afterLast = $afterLast;
+
+        return $this;
+    }
+
+    /**
+     * Get afterLast
+     *
+     * @return string 
+     */
+    public function getAfterLast()
+    {
+        return $this->afterLast;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Company\Company $company
+     * @return EntityTime
+     */
+    public function setCompany(\Brainstrap\CoreBundle\Entity\Company\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Company\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
      * Add hours
      *
      * @param \Brainstrap\CoreBundle\Entity\Rate\Time\CollectionTime $hours
@@ -124,51 +203,5 @@ class EntityTime
     public function getHours()
     {
         return $this->hours;
-    }
-
-    /**
-     * Set last
-     *
-     * @param string $last
-     * @return EntityTime
-     */
-    public function setLast($last)
-    {
-        $this->last = $last;
-
-        return $this;
-    }
-
-    /**
-     * Get last
-     *
-     * @return string 
-     */
-    public function getLast()
-    {
-        return $this->last;
-    }
-
-    /**
-     * Set afterLast
-     *
-     * @param string $afterLast
-     * @return EntityTime
-     */
-    public function setAfterLast($afterLast)
-    {
-        $this->afterLast = $afterLast;
-
-        return $this;
-    }
-
-    /**
-     * Get afterLast
-     *
-     * @return string 
-     */
-    public function getAfterLast()
-    {
-        return $this->afterLast;
     }
 }

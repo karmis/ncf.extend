@@ -1,6 +1,7 @@
 <?php
 namespace Brainstrap\CoreBundle\Entity\Company;
 
+use Brainstrap\CoreBundle\Entity\AbstractApiEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -11,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="core_companies")
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Company\CompanyRepository")
  */
-class Company
+class Company extends AbstractApiEntity
 {
     /**
      * @var integer
@@ -32,23 +33,14 @@ class Company
     private $caption;
 
     /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
+     * Get company
+     * Небольшой хак, для проверки принадлежности карты компании
+     * @return Company
      */
-    private $created;
-
-    /**
-     * @ORM\Column(name="updated", type="datetime")
-     * @Gedmo\Timestampable(on="update")
-     */
-    private $updated;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="locked", type="boolean")
-     */
-    private $locked;
+    public function getCompany()
+    {
+        return $this;
+    }
 
     public function __toString()
     {
@@ -86,74 +78,5 @@ class Company
     public function getCaption()
     {
         return $this->caption;
-    }
-
-    /**
-     * Set created
-     *
-     * @param \DateTime $created
-     * @return Company
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created
-     *
-     * @return \DateTime 
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param \DateTime $updated
-     * @return Company
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-
-        return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return \DateTime 
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    /**
-     * Set locked
-     *
-     * @param boolean $locked
-     * @return Company
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-
-        return $this;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean 
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 }

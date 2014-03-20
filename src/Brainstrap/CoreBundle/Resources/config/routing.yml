@@ -1,26 +1,38 @@
 company:
     type: rest
-    resource: Brainstrap\CoreBundle\Controller\CompanyController
+    resource: Brainstrap\CoreBundle\Controller\Company\CompanyController
 
 cart:
     type: rest
-    resource: Brainstrap\CoreBundle\Controller\CartController
+    resource: Brainstrap\CoreBundle\Controller\Cart\CartController
 
 client:
     type: rest
-    resource: Brainstrap\CoreBundle\Controller\ClientController
+    resource: Brainstrap\CoreBundle\Controller\Client\ClientController
+
+event:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\Event\EventController
+
+price:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\Price\PriceController
 
 session_simple:
     type: rest
-    resource: Brainstrap\CoreBundle\Controller\SimpleSessionController
+    resource: Brainstrap\CoreBundle\Controller\Session\Simple\SimpleSessionController
 
 session_group:
     type: rest
-    resource: Brainstrap\CoreBundle\Controller\Session\GroupSessionController
+    resource: Brainstrap\CoreBundle\Controller\Session\Group\GroupSessionController
 
-session_status_completed:
+session_status_start:
     type: rest
-    resource: Brainstrap\CoreBundle\Controller\SessionStatusController
+    resource: Brainstrap\CoreBundle\Controller\Session\Status\Start\SessionStatusStartController
+
+session_status_end:
+    type: rest
+    resource: Brainstrap\CoreBundle\Controller\Session\Status\End\SessionStatusEndController
 
 rate_time:
     type: rest
@@ -29,7 +41,6 @@ rate_time:
 rate_time_collection:
     type: rest
     resource: Brainstrap\CoreBundle\Controller\Rate\CollectionTimeController
-
 # user:
 #     type: rest
 #     parent: organisation

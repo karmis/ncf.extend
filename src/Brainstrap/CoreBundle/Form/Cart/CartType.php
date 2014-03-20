@@ -17,7 +17,6 @@ class CartType extends AbstractType
         $builder
             ->add('code')
             ->add('type')
-            ->add('locked')
             ->add('company')
 //            ->add('clients')
         ;

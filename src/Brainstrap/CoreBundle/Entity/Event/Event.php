@@ -1,0 +1,298 @@
+<?php
+
+namespace Brainstrap\CoreBundle\Entity\Event;
+
+use Brainstrap\CoreBundle\Entity\AbstractApiEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Event
+ *
+ * @ORM\Table(name="core_events")
+ * @ORM\Entity
+ */
+class Event extends AbstractApiEntity
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="caption", type="string", length=255)
+     */
+    private $caption;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Company\Company")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     */
+    private $company;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Cart\Cart", inversedBy="clients", cascade={"all"})
+     * @ORM\JoinTable(name="core_events_carts")
+     */
+    protected $carts;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="started", type="string")
+     */
+    private $started;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="completed", type="boolean")
+     */
+    private $completed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="finished", type="string")
+     */
+    private $finished;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="places", type="integer")
+     */
+    private $places;
+
+    public function __toString()
+    {
+        return $this->caption;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->completed = false;
+        $this->carts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set caption
+     *
+     * @param string $caption
+     * @return Event
+     */
+    public function setCaption($caption)
+    {
+        $this->caption = $caption;
+
+        return $this;
+    }
+
+    /**
+     * Get caption
+     *
+     * @return string 
+     */
+    public function getCaption()
+    {
+        return $this->caption;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Event
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set started
+     *
+     * @param string $started
+     * @return Event
+     */
+    public function setStarted($started)
+    {
+        $this->started = $started;
+
+        return $this;
+    }
+
+    /**
+     * Get started
+     *
+     * @return string 
+     */
+    public function getStarted()
+    {
+        return $this->started;
+    }
+
+    /**
+     * Set completed
+     *
+     * @param boolean $completed
+     * @return Event
+     */
+    public function setCompleted($completed)
+    {
+        $this->completed = $completed;
+
+        return $this;
+    }
+
+    /**
+     * Get completed
+     *
+     * @return boolean 
+     */
+    public function getCompleted()
+    {
+        return $this->completed;
+    }
+
+    /**
+     * Set finished
+     *
+     * @param string $finished
+     * @return Event
+     */
+    public function setFinished($finished)
+    {
+        $this->finished = $finished;
+
+        return $this;
+    }
+
+    /**
+     * Get finished
+     *
+     * @return string 
+     */
+    public function getFinished()
+    {
+        return $this->finished;
+    }
+
+    /**
+     * Set places
+     *
+     * @param integer $places
+     * @return Event
+     */
+    public function setPlaces($places)
+    {
+        $this->places = $places;
+
+        return $this;
+    }
+
+    /**
+     * Get places
+     *
+     * @return integer 
+     */
+    public function getPlaces()
+    {
+        return $this->places;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Company\Company $company
+     * @return Event
+     */
+    public function setCompany(\Brainstrap\CoreBundle\Entity\Company\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Company\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * Add carts
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Cart\Cart $carts
+     * @return Event
+     */
+    public function addCart(\Brainstrap\CoreBundle\Entity\Cart\Cart $carts)
+    {
+        $this->carts[] = $carts;
+
+        return $this;
+    }
+
+    /**
+     * Remove carts
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Cart\Cart $carts
+     */
+    public function removeCart(\Brainstrap\CoreBundle\Entity\Cart\Cart $carts)
+    {
+        $this->carts->removeElement($carts);
+    }
+
+    /**
+     * Get carts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCarts()
+    {
+        return $this->carts;
+    }
+}

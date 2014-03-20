@@ -2,7 +2,10 @@
 
 namespace Brainstrap\CoreBundle\Entity\Rate\Time;
 
+use Brainstrap\CoreBundle\Entity\AbstractApiEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * CollectionTime
@@ -10,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="core_rate_time_collection")
  * @ORM\Entity
  */
-class CollectionTime
+class CollectionTime extends AbstractApiEntity
 {
     /**
      * @var integer
@@ -37,6 +40,11 @@ class CollectionTime
 
     public function __toString(){
         return (string)$this->hour;
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
     }
 
     /**

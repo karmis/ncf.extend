@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * SessionStatusCompleted
  *
- * @ORM\Table(name="core_session_status_completed")
+ * @ORM\Table(name="core_session_status")
  * @ORM\Entity(repositoryClass="Brainstrap\CoreBundle\Repository\Session\SessionStatusRepository")
  */
 class SessionStatus

@@ -18,6 +18,7 @@ class EntityTimeType extends AbstractType
             ->add('caption')
             ->add('last')
             ->add('afterLast')
+            ->add('company')
             ->add('hours', 'collection', array(
                 'type' => new CollectionTimeType(),
                 'allow_add' => true,

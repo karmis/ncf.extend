@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert,
  */
 class GroupSession
 {
-
     /**
      * @var integer
      *
@@ -37,13 +36,33 @@ class GroupSession
     private $company;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatus")
-     * @ORM\JoinColumn(name="status_complete_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Brainstrap\CoreBundle\Entity\Cart\Cart")
+     * @ORM\JoinColumn(name="cart_id", referencedColumnName="id")
      */
-    private $status;
+    private $cart;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Session\AnonimSession", inversedBy="parent")
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime")
+     * @ORM\JoinColumn(name="rate_time_id", referencedColumnName="id")
+     */
+    private $rate;
+
+    /**
+     * Статус начала сессии
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatusStart")
+     * @ORM\JoinColumn(name="status_start_id", referencedColumnName="id")
+     */
+    private $statusStart;
+
+    /**
+     * Статус окончания сессии
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatusEnd")
+     * @ORM\JoinColumn(name="status_end_id", referencedColumnName="id")
+     */
+    private $statusEnd;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Brainstrap\CoreBundle\Entity\Session\AnonimSession", inversedBy="parent", cascade={"all"})
      * @ORM\JoinTable(name="core_sessions_group_childs_anonim")
      */
     protected $childs;
@@ -66,4 +85,215 @@ class GroupSession
      * @Gedmo\Timestampable(on="update")
      */
     private $updated;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->childs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set finished
+     *
+     * @param \DateTime $finished
+     * @return GroupSession
+     */
+    public function setFinished($finished)
+    {
+        $this->finished = $finished;
+
+        return $this;
+    }
+
+    /**
+     * Get finished
+     *
+     * @return \DateTime 
+     */
+    public function getFinished()
+    {
+        return $this->finished;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return GroupSession
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return GroupSession
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Company\Company $company
+     * @return GroupSession
+     */
+    public function setCompany(\Brainstrap\CoreBundle\Entity\Company\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Company\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * Set cart
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Cart\Cart $cart
+     * @return GroupSession
+     */
+    public function setCart(\Brainstrap\CoreBundle\Entity\Cart\Cart $cart = null)
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
+    /**
+     * Get cart
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Cart\Cart 
+     */
+    public function getCart()
+    {
+        return $this->cart;
+    }
+
+    /**
+     * Set rate
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime $rate
+     * @return GroupSession
+     */
+    public function setRate(\Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime $rate = null)
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
+
+    /**
+     * Get rate
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Rate\Time\EntityTime 
+     */
+    public function getRate()
+    {
+        return $this->rate;
+    }
+
+    /**
+     * Set status
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Session\SessionStatus $status
+     * @return GroupSession
+     */
+    public function setStatus(\Brainstrap\CoreBundle\Entity\Session\SessionStatus $status = null)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \Brainstrap\CoreBundle\Entity\Session\SessionStatus 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Add childs
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Session\AnonimSession $childs
+     * @return GroupSession
+     */
+    public function addChild(\Brainstrap\CoreBundle\Entity\Session\AnonimSession $childs)
+    {
+        $this->childs[] = $childs;
+
+        return $this;
+    }
+
+    /**
+     * Remove childs
+     *
+     * @param \Brainstrap\CoreBundle\Entity\Session\AnonimSession $childs
+     */
+    public function removeChild(\Brainstrap\CoreBundle\Entity\Session\AnonimSession $childs)
+    {
+        $this->childs->removeElement($childs);
+    }
+
+    /**
+     * Get childs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getChilds()
+    {
+        return $this->childs;
+    }
 }

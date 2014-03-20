@@ -35,6 +35,6 @@ class CollectionTimeType extends AbstractType
      */
     public function getName()
     {
-        return 'brainstrap_corebundle_rate_time_collectiontime';
+        return '';
     }
 }

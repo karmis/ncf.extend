@@ -16,7 +16,6 @@ class CompanyType extends AbstractType
     {
         $builder
             ->add('caption')
-            ->add('locked')
         ;
     }
     

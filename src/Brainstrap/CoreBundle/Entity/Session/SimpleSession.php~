@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert,
  */
 class SimpleSession
 {
-
     /**
      * @var integer
      *
@@ -49,10 +48,18 @@ class SimpleSession
     private $rate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatus")
-     * @ORM\JoinColumn(name="status_complete_id", referencedColumnName="id")
+     * Статус начала сессии
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatusStart")
+     * @ORM\JoinColumn(name="status_start_id", referencedColumnName="id")
      */
-    private $status;
+    private $statusStart;
+
+    /**
+     * Статус окончания сессии
+     * @ORM\ManyToOne(targetEntity="Brainstrap\CoreBundle\Entity\Session\SessionStatusEnd")
+     * @ORM\JoinColumn(name="status_end_id", referencedColumnName="id")
+     */
+    private $statusEnd;
 
     /**
      * @var string
