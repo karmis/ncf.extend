@@ -19,10 +19,11 @@ class AppKernel extends Kernel
 
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
-//            new FOS\UserBundle\FOSUserBundle(),
-            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+//            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
 
-            new Brainstrap\OAuthBundle\BrainstrapOAuthBundle(),
+//            new Brainstrap\OAuthBundle\BrainstrapOAuthBundle(),
+            new Brainstrap\UserBundle\BrainstrapUserBundle(),
             new Brainstrap\CoreBundle\BrainstrapCoreBundle(),
 
         );

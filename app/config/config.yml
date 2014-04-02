@@ -107,23 +107,16 @@ fos_rest:
             json: ['application/json', 'application/x-json']
         view_response_listener: 'force'
 
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: Brainstrap\UserBundle\Entity\User
 # OAuth
 #fos_oauth_server:
-#    db_driver: orm
+#    db_driver: orm       # Driver availables: orm, mongodb, or propel
 #    client_class:        Brainstrap\OAuthBundle\Entity\Client
 #    access_token_class:  Brainstrap\OAuthBundle\Entity\AccessToken
 #    refresh_token_class: Brainstrap\OAuthBundle\Entity\RefreshToken
 #    auth_code_class:     Brainstrap\OAuthBundle\Entity\AuthCode
 #    service:
 #        user_provider: platform.user.provider
-#        options:
-#            supported_scopes: user
-
-fos_oauth_server:
-    db_driver: orm       # Driver availables: orm, mongodb, or propel
-    client_class:        Brainstrap\OAuthBundle\Entity\Client
-    access_token_class:  Brainstrap\OAuthBundle\Entity\AccessToken
-    refresh_token_class: Brainstrap\OAuthBundle\Entity\RefreshToken
-    auth_code_class:     Brainstrap\OAuthBundle\Entity\AuthCode
-    service:
-        user_provider: platform.user.provider

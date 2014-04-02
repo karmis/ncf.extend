@@ -27,6 +27,22 @@
             <tag name="fos_oauth_server.grant_extension" uri="http://ncf.test/grants/api_key"/>
             <argument type="service" id="platform.user.repository"/>
         </service>
+
+        <service id="brainstrap_oauth.authorize.form_type" class="Brainstrap\OAuthBundle\Form\Type\AuthorizeFormType">
+        </service>
+
+        <service id="brainstrap_oauth_server.authorize.form" factory-method="createNamed" factory-service="form.factory" class="Symfony\Component\Form\Form">
+            <argument type="service" id="brainstrap_oauth.authorize.form_type" />
+            <argument>brainstrap_oauth_auth</argument>
+        </service>
+
+        <service id="brainstrap_oauth.authorize.form_handler" class="Brainstrap\OAuthBundle\Form\Handler\AuthorizeFormHandler" scope="request">
+            <argument type="service" id="brainstrap_oauth_server.authorize.form" />
+            <argument type="service" id="request" />
+            <argument type="service" id="security.context" />
+            <argument type="service" id="fos_oauth_server.server" />
+        </service>
     </services>
+
 
 </container>
